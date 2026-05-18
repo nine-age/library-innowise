@@ -2,7 +2,9 @@ import { renderBookCard } from "./renderBookCard.js";
 import { renderCoverMarkup } from "./renderCoverMarkup.js";
 import { renderMessageCard } from "./renderMessageCard.js";
 import { escapeAttribute, escapeHtml } from "../utils/escape.js";
-import { bookIcon, heartIcon, searchIcon } from "../assets/placeholders.js";
+import bookIcon from "../assets/book.svg";
+import heartIcon from "../assets/heart.svg";
+import searchIcon from "../assets/search.svg";
 import {
   ALL_AUTHORS_FILTER,
   createFavoriteKeySet,
@@ -13,6 +15,9 @@ import {
 
 export function renderApp(state) {
   const favoriteKeys = createFavoriteKeySet(state.favorites);
+  const shouldShowAuthorFilter = Boolean(
+    state.query && !state.loading && !state.error && state.results.length,
+  );
   const favoritesPanelClass = state.favorites.length
     ? "favorites-panel"
     : "favorites-panel favorites-panel--empty";
@@ -48,34 +53,18 @@ export function renderApp(state) {
             <p class="hero__text">
               Search millions of books, build your personal library, and never lose track of what to read next.
             </p>
-            <form class="search" data-search-form>
-              <label class="visually-hidden" for="book-query">Search books</label>
-              <div class="search__row">
-                <div class="search__field">
-                  <span class="search__icon-shell" aria-hidden="true">
-                    <img class="search__icon" src="${searchIcon}" alt="" />
-                  </span>
-                  <input
-                    id="book-query"
-                    class="search__input"
-                    type="search"
-                    name="query"
-                    placeholder="Search for books by title or author..."
-                    autocomplete="off"
-                    value="${escapeAttribute(state.draftQuery)}"
-                    data-search-input
-                  />
-                </div>
-                <button class="search__button" type="submit">Search</button>
-              </div>
-            </form>
-            <div class="hero__toolbar">
-              <label class="toolbar__group">
-                <span class="toolbar__label">Filter by author</span>
-                <select class="toolbar__select" data-author-filter>
-                  ${renderAuthorOptions(state)}
-                </select>
-              </label>
+            <div class="hero__toolbar ${shouldShowAuthorFilter ? "" : "hero__toolbar--search-only"}">
+              ${renderSearchForm(state, searchIcon)}
+              ${shouldShowAuthorFilter
+                ? `
+                  <label class="toolbar__group">
+                    <span class="toolbar__label">Filter by author</span>
+                    <select class="toolbar__select" data-author-filter>
+                      ${renderAuthorOptions(state)}
+                    </select>
+                  </label>
+                `
+                : ""}
             </div>
           </div>
         </section>
@@ -193,6 +182,32 @@ function renderAuthorOptions(state) {
   return `
     <option value="${ALL_AUTHORS_FILTER}" ${state.selectedAuthor === ALL_AUTHORS_FILTER ? "selected" : ""}>All authors</option>
     ${options}
+  `;
+}
+
+function renderSearchForm(state, icon) {
+  return `
+    <form class="search" data-search-form>
+      <label class="visually-hidden" for="book-query">Search books</label>
+      <div class="search__row">
+        <div class="search__field">
+          <span class="search__icon-shell" aria-hidden="true">
+            <img class="search__icon" src="${icon}" alt="" />
+          </span>
+          <input
+            id="book-query"
+            class="search__input"
+            type="search"
+            name="query"
+            placeholder="Search for books by title or author..."
+            autocomplete="off"
+            value="${escapeAttribute(state.draftQuery)}"
+            data-search-input
+          />
+        </div>
+        <button class="search__button" type="submit">Search</button>
+      </div>
+    </form>
   `;
 }
 

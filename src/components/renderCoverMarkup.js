@@ -1,6 +1,8 @@
-import { bookIcon, coverPlaceholderLabel } from "../assets/placeholders.js";
+import bookIcon from "../assets/book.svg";
 import { escapeAttribute } from "../utils/escape.js";
 import { getCoverUrl } from "../utils/books.js";
+
+const COVER_PLACEHOLDER_LABEL = "No cover";
 
 export function renderCoverMarkup({
   title,
@@ -13,9 +15,9 @@ export function renderCoverMarkup({
 }) {
   if (!coverId) {
     return `
-      <div class="${placeholderClass}" aria-label="${coverPlaceholderLabel}">
+      <div class="${placeholderClass}" aria-label="${COVER_PLACEHOLDER_LABEL}">
         <img class="${placeholderIconClass}" src="${bookIcon}" alt="" aria-hidden="true" />
-        ${showPlaceholderLabel ? `<span>${coverPlaceholderLabel}</span>` : ""}
+        ${showPlaceholderLabel ? `<span>${COVER_PLACEHOLDER_LABEL}</span>` : ""}
       </div>
     `;
   }

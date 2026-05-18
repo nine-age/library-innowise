@@ -1,4 +1,4 @@
-import { heartIcon } from "../assets/placeholders.js";
+import heartIcon from "../assets/heart.svg";
 import { renderCoverMarkup } from "./renderCoverMarkup.js";
 import { escapeAttribute, escapeHtml } from "../utils/escape.js";
 import { getBookAuthors, getBookYear } from "../utils/books.js";
